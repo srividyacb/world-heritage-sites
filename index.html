@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>World Heritage Sites</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.14.2/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.14.2/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+    </style>
+</head>
+<body>
+
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v0.1.0/mapbox-gl-geocoder.js'></script>
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v0.1.0/mapbox-gl-geocoder.css' type='text/css' />
+
+<style>
+    .mapboxgl-popup {
+        max-width: 400px;
+        font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    }
+
+    .marker-title {
+        font-weight: 700;
+    }
+</style>
+<div id='map'></div>
+<script>
+mapboxgl.accessToken = 'pk.eyJ1Ijoic3JpdmlkeWEiLCJhIjoicXo2NTJKayJ9.m1P57SCwkp8_7N3TgYsVRg';
+
+var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/srividya/cik0qlc2f014nbmkv8003meez',
+    center: [11.70, 35.96],
+    zoom: 2.5
+});
+
+map.addControl(new mapboxgl.Navigation());
+map.addControl(new mapboxgl.Geocoder());
+
+map.on('click', function (e) {
+    //map.panTo(e.getLatLng());
+	console.log(map.getZoom());
+	map.featuresAt(e.point, {
+		radius: 8,
+		layer: ['whc-sites'],
+		includeGeometry: true
+			}, function (err, features) {
+				if (err) throw err;
+
+				if (features.length > 0) {
+					var popupHTML = '<b>' + features[0].properties.name + '</b>' + features[0].properties.short_description_en ;
+					var popup = new mapboxgl.Popup()
+								.setLngLat(features[0].geometry.coordinates)
+								.setHTML(popupHTML)
+								.addTo(map);
+							}
+						});
+
+});
+
+</script>
+
+</body>
+</html>
